@@ -1,0 +1,29 @@
+{
+  "skill_name": "repo-simplifier",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "hey so i've got this python cli tool i built last year (it's in ~/projects/data-processor) and honestly it's gotten kinda messy. there's like 3 different util.py files in different folders that all have similar functions, the README is super short but there's also a docs/ folder with 5 markdown files that basically repeat the same stuff, i added a bunch of --debug-level-1, --debug-level-2, --verbose flags that i don't think anyone actually uses, and the test files have a lot of duplicates too - like test_parse_json and test_json_parser do the same thing. can you clean this up? i just want it to be easier to maintain without breaking anything",
+      "expected_output": "Creates backup branch, analyzes codebase for duplicate utility functions across modules and duplicate test cases, consolidates utility functions into single utils module with proper imports, merges documentation from docs/ into comprehensive README, identifies and removes unused debug flags while consolidating verbose logging options, removes duplicate test cases and consolidates test fixtures, makes incremental commits for each change type (code, docs, CLI, tests), runs tests to verify functionality preserved, provides comprehensive summary report showing code/doc/CLI/test changes with metrics",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I'm working on this Go microservice (path is ./api-gateway/) and over time we've accumulated a lot of cruft. There's duplicate error handling code in like 4 different packages, we have README.md, USAGE.md, API.md, and SETUP.md which all kinda say similar things, the CLI has flags like --enable-metrics, --metrics-enabled, --enable-prometheus that all basically do the same thing (some are literally never used), and our *_test.go files have tons of duplicate helper functions and some tests for features we removed months ago. Need to simplify this before onboarding new team members next week.",
+      "expected_output": "Creates backup branch, identifies duplicate error handling functions across packages and consolidates into shared error package, merges all documentation files into single comprehensive README with proper sections for setup/usage/API reference, analyzes CLI flags to find true duplicates and unused ones, removes unused flags and consolidates overlapping metrics flags into single --enable-metrics option, removes tests for deleted features and consolidates duplicate test helpers, updates remaining tests accordingly, creates incremental commits with clear explanations (separate commits for code/docs/CLI/tests), verifies all tests pass, provides detailed summary of consolidations with metrics",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "simplify my repo at ~/code/ml-pipeline - too many duplicate functions and messy docs",
+      "expected_output": "Creates backup branch, performs comprehensive analysis of the repository to identify code duplication patterns, consolidates duplicate functions with proper verification, simplifies documentation by merging into README, checks for redundant CLI parameters if applicable, checks for test simplification opportunities, makes incremental commits, runs tests, provides summary. Should ask user for clarification about which aspects to prioritize since request is brief.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Our Python testing suite at ./analytics-engine/ has gotten out of hand. We have test_data_processor.py, test_processor.py, and test_data_processing.py which all test similar stuff. There are like 15 different test fixtures across files doing the same database setup. Plus we removed the legacy CSV import feature 3 months ago but all the tests for it are still there (test_csv_import.py, test_legacy_import.py). The tests take forever to run and half of them seem redundant. Can you clean this up while making sure we don't lose any actual coverage?",
+      "expected_output": "Creates backup branch specifically notes test-focused cleanup, analyzes test files to identify duplicates across the three processor test files, consolidates test fixtures into shared conftest.py, removes entire test files for deleted CSV import feature, identifies and removes truly duplicate test cases while preserving unique edge case coverage, runs coverage analysis before and after to verify no coverage loss, makes incremental commits for each type of test cleanup (removed obsolete tests, consolidated fixtures, merged duplicate tests), runs full test suite to verify all remaining tests pass, provides detailed summary showing test count before/after, coverage metrics, and performance improvement",
+      "files": []
+    }
+  ]
+}

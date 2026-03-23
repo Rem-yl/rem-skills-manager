@@ -1,0 +1,23 @@
+{
+  "skill_name": "tdd-feature-development",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need to implement a rate limiting feature for our API. It should limit requests to 100 per minute per user, using a token bucket algorithm. We're using Python with FastAPI. Please implement this feature.",
+      "expected_output": "Implementation should follow TDD workflow: write tests first, implement with type hints and docstrings in English, use code review, format code, and create git commits after each stage. Should use pytest for testing.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Can you add a new feature to validate user input for our registration form? We need to check email format, password strength (min 8 chars, must have uppercase, lowercase, number), and username uniqueness. This is a Go project using the standard library.",
+      "expected_output": "Should break down into components (email validation, password validation, username checking), write tests first for each component, implement with proper Go documentation comments, use go fmt/vet, and commit incrementally.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "We need to build a caching layer for our database queries to improve performance. The cache should support TTL (time-to-live), handle cache invalidation, and work with our existing TypeScript/Node.js backend. Please create this component.",
+      "expected_output": "Should follow TDD cycle: write Jest/Vitest tests first, implement with TypeScript type annotations and JSDoc comments in English, integrate code-reviewer skill, use Prettier/ESLint formatting, and make descriptive git commits.",
+      "files": []
+    }
+  ]
+}

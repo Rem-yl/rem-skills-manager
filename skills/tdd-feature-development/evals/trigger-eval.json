@@ -1,0 +1,126 @@
+{
+  "skill_name": "tdd-feature-development",
+  "description": "Trigger evaluation for skill description optimization",
+  "queries": [
+    {
+      "id": 1,
+      "query": "I need to implement a new user authentication feature with JWT tokens",
+      "should_trigger": true,
+      "reason": "Implementing new feature - clear use case for TDD workflow"
+    },
+    {
+      "id": 2,
+      "query": "Can you build a REST API endpoint for creating blog posts?",
+      "should_trigger": true,
+      "reason": "Building new component/functionality"
+    },
+    {
+      "id": 3,
+      "query": "Add a caching layer to our database queries",
+      "should_trigger": true,
+      "reason": "Adding new functionality to existing system"
+    },
+    {
+      "id": 4,
+      "query": "Create a new module for handling file uploads with validation",
+      "should_trigger": true,
+      "reason": "Creating new module - explicit trigger phrase"
+    },
+    {
+      "id": 5,
+      "query": "Implement password strength validation for our registration form",
+      "should_trigger": true,
+      "reason": "Implementing feature - explicit trigger"
+    },
+    {
+      "id": 6,
+      "query": "We need to add rate limiting functionality to our API",
+      "should_trigger": true,
+      "reason": "Adding functionality - should trigger"
+    },
+    {
+      "id": 7,
+      "query": "Build a notification system that sends emails when users sign up",
+      "should_trigger": true,
+      "reason": "Building new system/component"
+    },
+    {
+      "id": 8,
+      "query": "I want to develop a search feature with filters and pagination",
+      "should_trigger": true,
+      "reason": "Developing new feature"
+    },
+    {
+      "id": 9,
+      "query": "Create a payment processing integration with Stripe",
+      "should_trigger": true,
+      "reason": "Creating new integration - significant feature"
+    },
+    {
+      "id": 10,
+      "query": "Add analytics tracking to our application",
+      "should_trigger": true,
+      "reason": "Adding new capability"
+    },
+    {
+      "id": 11,
+      "query": "There's a bug in the login function - it's not validating passwords correctly",
+      "should_trigger": false,
+      "reason": "Bug fix, not new feature - should use debugging skill"
+    },
+    {
+      "id": 12,
+      "query": "Can you refactor this function to be more readable?",
+      "should_trigger": false,
+      "reason": "Refactoring existing code, not new feature"
+    },
+    {
+      "id": 13,
+      "query": "Update the README with installation instructions",
+      "should_trigger": false,
+      "reason": "Documentation update, not code feature"
+    },
+    {
+      "id": 14,
+      "query": "Review my pull request for the authentication changes",
+      "should_trigger": false,
+      "reason": "Code review request - different skill"
+    },
+    {
+      "id": 15,
+      "query": "I need a quick prototype to test an idea",
+      "should_trigger": false,
+      "reason": "Prototype/throwaway code - TDD overhead not justified"
+    },
+    {
+      "id": 16,
+      "query": "Change the database connection string in the config file",
+      "should_trigger": false,
+      "reason": "Configuration change, not feature development"
+    },
+    {
+      "id": 17,
+      "query": "Fix the TypeScript compilation errors in utils.ts",
+      "should_trigger": false,
+      "reason": "Fixing errors, not developing feature"
+    },
+    {
+      "id": 18,
+      "query": "Optimize this database query that's running slowly",
+      "should_trigger": false,
+      "reason": "Performance optimization of existing code"
+    },
+    {
+      "id": 19,
+      "query": "Add comments to explain what this algorithm does",
+      "should_trigger": false,
+      "reason": "Documentation task, not feature development"
+    },
+    {
+      "id": 20,
+      "query": "Rename this variable to be more descriptive",
+      "should_trigger": false,
+      "reason": "Minor refactoring, not new feature"
+    }
+  ]
+}

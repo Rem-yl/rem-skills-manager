@@ -1,0 +1,13 @@
+{
+    "name": "rem-marketplace",
+    "owner": {
+        "name": "rem"
+    },
+    "plugins": [
+        {
+            "name": "rem-skills",
+            "source": ".",
+            "description": "Personal skills collection"
+        }
+    ]
+}

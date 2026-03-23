@@ -1,0 +1,144 @@
+{
+  "skill_name": "paper-summary",
+  "description": "Test cases for paper-summary skill validation",
+  "evals": [
+    {
+      "id": 1,
+      "name": "standard-summary-transformer",
+      "prompt": "Summarize this paper: evals/files/attention-is-all-you-need.md",
+      "expected_output": "Standard-length summary (~1500 words) with all 6 sections (Problem Statement, Solution Approach, Proposed Method, Experimental Design, Experimental Methodology, Experimental Results), preserved LaTeX formulas for attention mechanism, transformer architecture details, and results tables",
+      "files": ["evals/files/attention-is-all-you-need.md"],
+      "assertions": [
+        "Output contains all 6 main sections (## 1-6)",
+        "LaTeX formulas are preserved exactly (check for $...$ and $$...$$)",
+        "Word count is between 1200-1800",
+        "Contains at least one results table",
+        "Key Takeaways section is present"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "brief-summary-resnet",
+      "prompt": "Give me a brief summary of evals/files/resnet.md, just the main ideas",
+      "expected_output": "Brief summary (~600 words) emphasizing problem (degradation in deep networks), solution (residual connections), and core contribution (skip connections enable very deep networks). Should include residual block formula but not exhaustive details.",
+      "files": ["evals/files/resnet.md"],
+      "assertions": [
+        "Word count is between 500-800",
+        "Sections 1, 2, 3 are more detailed than 4, 5, 6",
+        "Contains residual connection formula: F(x) + x",
+        "Brief mentions ImageNet results without full tables",
+        "No detailed ablation studies"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "detailed-summary-bert",
+      "prompt": "I need a comprehensive analysis of evals/files/bert.md, especially the experimental design",
+      "expected_output": "Detailed summary (~3500 words) with comprehensive coverage of all sections, emphasis on sections 4-6 (experimental design, methodology, results). Should include all datasets (GLUE, SQuAD), all baselines, complete hyperparameters, and all ablation studies.",
+      "files": ["evals/files/bert.md"],
+      "assertions": [
+        "Word count is between 2500-4000",
+        "Sections 4, 5, 6 have multiple subsections",
+        "Contains GLUE benchmark details (all tasks)",
+        "Contains SQuAD dataset details",
+        "Includes pre-training hyperparameters table",
+        "Includes fine-tuning hyperparameters table",
+        "Contains ablation study results",
+        "Masked LM formula is preserved"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "formula-preservation-check",
+      "prompt": "Summarize evals/files/attention-mechanism.md in standard detail",
+      "expected_output": "Standard summary with all attention formulas preserved exactly, including scaled dot-product attention, multi-head attention, and self-attention formulations",
+      "files": ["evals/files/attention-mechanism.md"],
+      "assertions": [
+        "Contains: Attention(Q, K, V) = softmax(QK^T / sqrt(d_k))V",
+        "All LaTeX special characters preserved (\\frac, \\sqrt, \\text, etc.)",
+        "No formulas converted to plain text",
+        "Inline formulas ($...$) preserved",
+        "Display formulas ($$...$$) preserved"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "missing-sections-handling",
+      "prompt": "Summarize evals/files/incomplete-paper.md",
+      "expected_output": "Summary with notes about missing sections, inference from context where reasonable, clear indication of what's absent",
+      "files": ["evals/files/incomplete-paper.md"],
+      "assertions": [
+        "Notes missing sections explicitly",
+        "Attempts to infer from available context",
+        "Doesn't hallucinate missing information",
+        "Provides partial analysis for available sections",
+        "Suggests what's lacking in the paper"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "non-academic-content-rejection",
+      "prompt": "Summarize this paper: evals/files/blog-post.md",
+      "expected_output": "Polite decline explaining this skill is for academic research papers, suggestion to use general-purpose summarization instead",
+      "files": ["evals/files/blog-post.md"],
+      "assertions": [
+        "Recognizes non-academic content",
+        "Politely declines to process",
+        "Explains skill purpose",
+        "Suggests alternative approach",
+        "Doesn't attempt to force academic structure"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "image-reference-preservation",
+      "prompt": "Summarize evals/files/paper-with-figures.md in standard detail",
+      "expected_output": "Standard summary with all image references preserved intact, including captions and original paths",
+      "files": ["evals/files/paper-with-figures.md"],
+      "assertions": [
+        "All ![...](path) syntax preserved",
+        "Image paths unchanged",
+        "Captions preserved",
+        "Images positioned in relevant sections",
+        "No broken image references"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "detail-level-auto-detection",
+      "prompt": "Give me a quick overview of evals/files/resnet.md",
+      "expected_output": "Brief summary (~600 words) - skill should auto-detect 'quick overview' as Brief level without asking",
+      "files": ["evals/files/resnet.md"],
+      "assertions": [
+        "Auto-detects Brief level from 'quick overview'",
+        "Doesn't ask for detail level confirmation",
+        "Word count is 500-800",
+        "Focuses on core ideas only"
+      ]
+    }
+  ],
+  "setup_instructions": [
+    "Place sample paper markdown files in evals/files/",
+    "Ensure files contain academic content with LaTeX formulas",
+    "Include at least one incomplete paper for edge case testing",
+    "Include at least one non-academic file (blog post) for rejection testing",
+    "Files should have various complexities (theory-heavy, empirical, systems)"
+  ],
+  "sample_files_needed": [
+    "attention-is-all-you-need.md - Classic transformer paper",
+    "resnet.md - Deep residual learning paper",
+    "bert.md - BERT pretraining paper",
+    "attention-mechanism.md - Paper with heavy mathematical formulations",
+    "incomplete-paper.md - Paper missing some standard sections",
+    "blog-post.md - Non-academic content for rejection test",
+    "paper-with-figures.md - Paper with multiple image references"
+  ],
+  "validation_criteria": {
+    "structure": "All 6 sections present with proper headers (## 1-6)",
+    "formulas": "All LaTeX notation preserved exactly (visual diff check)",
+    "images": "All ![...](path) references intact",
+    "length": "Word count matches detail level ranges",
+    "content": "Accurate extraction of paper content",
+    "edge_cases": "Proper handling of missing sections and non-academic content"
+  }
+}
