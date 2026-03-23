@@ -6,7 +6,7 @@
     "plugins": [
         {
             "name": "rem-skills",
-            "source": ".",
+            "source": "./",
             "description": "Personal skills collection"
         }
     ]
