@@ -1,0 +1,51 @@
+{
+  "review_gates": {
+    "gate_1_requirements": {
+      "enabled": true,
+      "required": true,
+      "timeout_minutes": 30,
+      "description": "需求文档审查"
+    },
+    "gate_2_solution": {
+      "enabled": true,
+      "required": true,
+      "timeout_minutes": 20,
+      "description": "技术方案审查"
+    },
+    "gate_3_plan": {
+      "enabled": true,
+      "required": false,
+      "timeout_minutes": 15,
+      "description": "实现计划审查"
+    },
+    "gate_4_code": {
+      "enabled": true,
+      "required": true,
+      "timeout_minutes": 15,
+      "description": "代码与文档双评审"
+    },
+    "gate_5_test": {
+      "enabled": true,
+      "required": false,
+      "timeout_minutes": 10,
+      "description": "测试策略审查"
+    },
+    "gate_6_acceptance": {
+      "enabled": true,
+      "required": true,
+      "timeout_minutes": 10,
+      "description": "最终验收"
+    }
+  },
+  "quick_fix_mode": {
+    "skip_gates": ["gate_2_solution", "gate_3_plan", "gate_5_test"],
+    "description": "快速修复模式跳过的审查节点"
+  },
+  "test_limits": {
+    "p0_max": 10,
+    "p1_max": 20,
+    "p2_max": 10,
+    "total_max": 40,
+    "description": "各级测试用例数量上限"
+  }
+}
