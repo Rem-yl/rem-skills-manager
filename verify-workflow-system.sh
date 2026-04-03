@@ -30,9 +30,10 @@ echo "  Total: $agent_count/7"
 echo ""
 
 # 检查 Skills
-echo "📦 检查 Skills (4个)..."
+echo "📦 检查 Skills (5个)..."
 skills=(
     "ai-dev-workflow"
+    "rapid-dev"
     "start-new-feature"
     "quick-fix"
     "review-only"
@@ -47,7 +48,7 @@ for skill in "${skills[@]}"; do
         echo "  ❌ $skill (缺失)"
     fi
 done
-echo "  Total: $skill_count/4"
+echo "  Total: $skill_count/5"
 echo ""
 
 # 检查配置文件
@@ -78,14 +79,30 @@ echo ""
 echo "========================================="
 echo " 验证结果"
 echo "========================================="
-if [ $agent_count -eq 7 ] && [ $skill_count -eq 4 ]; then
+if [ $agent_count -eq 7 ] && [ $skill_count -eq 5 ]; then
     echo "✅ 所有组件已正确安装！"
     echo ""
-    echo "🚀 快速开始:"
+    echo "🚀 可用的工作流模式:"
+    echo ""
+    echo "1️⃣  完整工作流 (6阶段 + 6审查节点)"
     echo "   /ai-dev-workflow [需求描述]"
+    echo "   适合: 复杂功能、架构变更"
+    echo ""
+    echo "2️⃣  快速开发 (3阶段 + 2审查节点) ⭐ 推荐"
+    echo "   /rapid-dev [功能描述]"
+    echo "   适合: 常规新功能、标准接口"
+    echo ""
+    echo "3️⃣  快速修复 (适合Bug修复)"
+    echo "   /quick-fix [问题描述]"
+    echo ""
+    echo "4️⃣  仅评审 (适合代码审查)"
+    echo "   /review-only [改动范围]"
+    echo ""
+    echo "📚 查看模式对比:"
+    echo "   cat .claude/SKILLS_COMPARISON.md"
     echo ""
     echo "📚 查看使用文档:"
-    echo "   cat .claude/AI_WORKFLOW_README.md"
+    echo "   cat .claude/QUICK_START.md"
 else
     echo "⚠️  部分组件缺失，请检查安装"
 fi

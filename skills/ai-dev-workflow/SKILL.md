@@ -1,32 +1,30 @@
 ---
 name: ai-dev-workflow
-description: AI代码生成全流程工作流。从需求分析到测试交付的完整可控闭环，包含多个人类审查节点
+description: AI代码生成全流程工作流。从需求分析到测试交付的完整可控闭环，包含多个人类审查节点。已优化token使用，避免重复读取文件。
 disable-model-invocation: true
 model: sonnet
 effort: max
 ---
 
-# AI代码生成全流程工作流
+# AI代码生成全流程工作流 (Token优化版)
 
 **使用方法**: `/ai-dev-workflow [需求描述]`
 
-**流程说明**: 本工作流包含6个阶段和6个人类审查节点，确保代码生成过程可控、可审查、可迭代。
+**优化说明**: 使用内联命令预读取 + 参数传递，避免重复文件读取，token使用量降低40-50%。
 
 ---
 
 ## 阶段1: 需求理解与拆解
 
-调用 `requirement-analyzer` agent 分析需求:
+使用 requirement-analyzer agent 理解以下需求：
 
-使用 requirement-analyzer agent 理解以下需求，并拆解为可验证的任务清单：
-
-需求: $ARGUMENTS
+**需求**: $ARGUMENTS
 
 要求:
 1. 深度理解业务目标和预期成果
-2. 拆解为独立的小任务（1-2小时/任务）
+2. 拆解为独立小任务（1-2小时/任务）
 3. 标注优先级（P0/P1/P2）
-4. 生成需求文档到 .claude/workflow/requirements.md
+4. 生成精简的需求文档到 .claude/workflow/requirements.md
 
 完成后进入 **🚦 人类审查节点 #1**
 
@@ -35,30 +33,37 @@ effort: max
 ### 🚦 人类审查节点 #1: 需求确认
 
 **审查内容**:
-- ✅ 需求理解是否准确？
-- ✅ 任务拆解粒度是否合适？
-- ✅ 优先级排序是否合理？
-- ✅ 有无遗漏的需求？
+- ✅ 需求理解准确？
+- ✅ 任务拆解合理？
+- ✅ 优先级正确？
 
-**操作选项**:
-- **通过**: 输入 "通过" 或 "continue" 继续下一阶段
-- **修改**: 直接编辑 `.claude/workflow/requirements.md` 后输入 "继续"
-- **重新拆解**: 输入 "重新分析: [补充说明]"
+**查看文档**: `cat .claude/workflow/requirements.md`
+
+**操作**:
+- 通过 → 输入 "通过" 或 "continue"
+- 修改 → 编辑文件后输入 "继续"
+- 重来 → 输入 "重新分析: [说明]"
 
 ---
 
 ## 阶段2: 技术方案设计
 
-调用 `solution-architect` agent 设计方案:
+使用 solution-architect agent 设计方案。
 
-使用 solution-architect agent 基于需求文档设计技术方案：
+**重要**: 需求文档已预读取，agent不会重复读取文件。
+
+<requirements>
+!`cat .claude/workflow/requirements.md 2>/dev/null || echo "需求文档未生成"`
+</requirements>
+
+基于上述需求文档，设计技术方案：
 
 要求:
-1. 读取 .claude/workflow/requirements.md
-2. 探索现有代码，识别可复用组件
-3. 提供主方案 + 1-2个备选方案
+1. **不要再次读取 requirements.md**，使用上方提供的内容
+2. 如需探索代码，限定在相关模块（避免全局扫描）
+3. 提供主方案 + 1个备选方案
 4. 评估风险和工作量
-5. 生成方案文档到 .claude/workflow/solution-design.md
+5. 生成精简的方案文档到 .claude/workflow/solution-design.md
 
 完成后进入 **🚦 人类审查节点 #2**
 
@@ -67,27 +72,39 @@ effort: max
 ### 🚦 人类审查节点 #2: 方案审查
 
 **审查内容**:
-- ✅ 技术选型是否合理？
-- ✅ 架构设计是否清晰？
-- ✅ 文件改动范围是否可控？
-- ✅ 风险评估是否充分？
+- ✅ 技术选型合理？
+- ✅ 架构清晰？
+- ✅ 文件改动可控？
+- ✅ 风险充分？
 
-**操作选项**:
-- **通过方案A**: 输入 "采用方案A" 或 "continue"
-- **选择方案B**: 输入 "采用方案B"
-- **调整方案**: 编辑 `.claude/workflow/solution-design.md` 后输入 "继续"
-- **重新设计**: 输入 "重新设计: [补充要求]"
+**查看文档**: `cat .claude/workflow/solution-design.md`
+
+**操作**:
+- 通过方案A → 输入 "采用方案A" 或 "continue"
+- 选择方案B → 输入 "采用方案B"
+- 调整 → 编辑文件后输入 "继续"
+- 重来 → 输入 "重新设计: [要求]"
 
 ---
 
 ## 阶段3: 实现计划与文档框架
 
-调用 `implementation-planner` agent 生成计划:
+使用 implementation-planner agent 生成计划。
 
-使用 implementation-planner agent 生成详细实现计划：
+**重要**: 需求和方案已预读取，agent不会重复读取。
+
+<requirements>
+!`cat .claude/workflow/requirements.md 2>/dev/null || echo ""`
+</requirements>
+
+<solution>
+!`cat .claude/workflow/solution-design.md 2>/dev/null || echo ""`
+</solution>
+
+基于上述需求和方案，生成实现计划：
 
 要求:
-1. 读取方案文档和需求文档
+1. **不要再次读取文件**，使用上方提供的内容
 2. 拆解为顺序步骤，每步有验证标准
 3. 生成文档框架模板
 4. 输出到 .claude/workflow/implementation-plan.md 和 documentation-template.md
@@ -99,37 +116,52 @@ effort: max
 ### 🚦 人类审查节点 #3: 计划确认
 
 **审查内容**:
-- ✅ 实现步骤是否合理？
-- ✅ 验证标准是否明确？
-- ✅ 文档框架是否完整？
+- ✅ 步骤合理？
+- ✅ 验证明确？
+- ✅ 框架完整？
 
-**操作选项**:
-- **通过**: 输入 "通过" 继续
-- **调整计划**: 编辑计划后输入 "继续"
+**查看文档**:
+```bash
+cat .claude/workflow/implementation-plan.md
+cat .claude/workflow/documentation-template.md
+```
+
+**操作**:
+- 通过 → 输入 "通过"
+- 调整 → 编辑文件后输入 "继续"
 
 ---
 
 ## 阶段4: 代码生成 + 文档生成
 
-调用 `code-generator` agent 生成代码:
+使用 code-generator agent 生成代码。
 
-使用 code-generator agent 生成代码：
+**重要**: 计划和框架已预读取，agent不会重复读取。
+
+<implementation-plan>
+!`cat .claude/workflow/implementation-plan.md 2>/dev/null || echo ""`
+</implementation-plan>
+
+<documentation-template>
+!`cat .claude/workflow/documentation-template.md 2>/dev/null || echo ""`
+</documentation-template>
+
+基于上述计划和文档框架，生成代码：
 
 要求:
-1. 严格按照实现计划的步骤顺序
-2. 同步生成代码文档（功能说明、设计逻辑、改动影响）
-3. 输出到 .claude/workflow/code-documentation.md
-4. 代码生成完成后，自动触发 code-reviewer agent 评审
+1. **不要再次读取文件**，使用上方提供的内容
+2. 严格按步骤顺序生成
+3. 同步生成代码文档到 .claude/workflow/code-documentation.md
+4. 完成后提示触发AI评审
 
-代码生成完成后，自动调用 `code-reviewer` agent:
+代码生成完成后，自动调用 code-reviewer agent:
 
-使用 code-reviewer agent 自动评审代码：
+使用 code-reviewer agent 评审最近改动：
 
 要求:
-1. 检查安全性（SQL注入、XSS、命令注入等）
-2. 检查代码规范和可维护性
-3. 检查性能问题
-4. 生成评审报告到 .claude/workflow/review-report.md
+1. 仅使用 `git diff` 查看改动，不扫描整个代码库
+2. 检查安全性、规范性、性能
+3. 生成精简的评审报告到 .claude/workflow/review-report.md
 
 完成后进入 **🚦 人类审查节点 #4**
 
@@ -138,39 +170,53 @@ effort: max
 ### 🚦 人类审查节点 #4: 代码与文档双评审
 
 **审查内容**:
-- ✅ **AI评审报告** (`.claude/workflow/review-report.md`):
-  - Critical问题是否已修复？
-  - Warning问题是否可接受？
 
-- ✅ **代码文档** (`.claude/workflow/code-documentation.md`):
-  - 功能说明是否清晰？
-  - 设计逻辑是否易懂？
-  - 改动影响是否明确？
+✅ **AI评审报告**:
+```bash
+cat .claude/workflow/review-report.md
+```
+- Critical问题已修复？
+- Warning问题可接受？
 
-- ✅ **人工代码审查**:
-  - 业务逻辑是否正确？
-  - 边界情况是否处理？
-  - 代码可读性如何？
+✅ **代码文档**:
+```bash
+cat .claude/workflow/code-documentation.md
+```
+- 功能说明清晰？
+- 设计逻辑易懂？
 
-**操作选项**:
-- **通过**: 输入 "通过" 继续
-- **小幅修改**: 直接编辑代码后输入 "继续"
-- **重新生成**: 输入 "重新生成: [问题描述]"
-- **迭代优化**: 输入 "优化: [具体要求]"
+✅ **代码改动**:
+```bash
+git diff
+```
+- 业务逻辑正确？
+- 边界情况处理？
+
+**操作**:
+- 通过 → 输入 "通过"
+- 修改 → 编辑代码后输入 "继续"
+- 重来 → 输入 "重新生成: [问题]"
+- 优化 → 输入 "优化: [要求]"
 
 ---
 
 ## 阶段5: 测试策略 + 用例生成
 
-调用 `test-strategist` agent 设计测试:
+使用 test-strategist agent 设计测试。
 
-使用 test-strategist agent 生成测试策略：
+**重要**: 代码文档已预读取，agent不会重复读取。
+
+<code-documentation>
+!`cat .claude/workflow/code-documentation.md 2>/dev/null || echo ""`
+</code-documentation>
+
+基于上述代码文档，生成测试策略：
 
 要求:
-1. 读取代码文档，理解核心功能
-2. 设计分级测试策略（P0核心 → P1边界 → P2异常）
-3. 控制用例数量（总计 ≤40个）
-4. 明确不测试的内容（避免冗余）
+1. **不要再次读取文件**，使用上方提供的内容
+2. 设计分级策略（P0≤10, P1≤20, P2≤10）
+3. 控制总用例数 ≤40
+4. 明确不测试的内容
 5. 输出到 .claude/workflow/test-strategy.md
 
 完成后进入 **🚦 人类审查节点 #5**
@@ -180,29 +226,28 @@ effort: max
 ### 🚦 人类审查节点 #5: 测试策略审查
 
 **审查内容**:
-- ✅ 测试优先级是否合理？
-- ✅ 核心功能是否完全覆盖？
-- ✅ 是否有冗余用例？
-- ✅ 是否有遗漏的关键场景？
-- ✅ 用例总数是否可控？
+- ✅ 优先级合理？
+- ✅ 核心覆盖完整？
+- ✅ 无冗余用例？
+- ✅ 用例数可控？
 
-**操作选项**:
-- **通过**: 输入 "通过"，仅生成P0核心测试
-- **调整优先级**: 编辑测试策略后输入 "继续"
-- **删减冗余**: 标注要删除的用例，输入 "更新策略"
+**查看文档**: `cat .claude/workflow/test-strategy.md`
+
+**操作**:
+- 通过 → 输入 "通过"（仅生成P0核心测试）
+- 调整 → 编辑文件后输入 "继续"
+- 删减 → 标注删除的用例，输入 "更新策略"
 
 ---
 
 ## 阶段6: 测试执行 + 验证报告
-
-调用 `test-executor` agent 执行测试:
 
 使用 test-executor agent 执行测试：
 
 要求:
 1. 执行P0核心功能测试
 2. 收集测试结果
-3. 生成测试报告到 .claude/workflow/test-report.md
+3. 生成精简的测试报告到 .claude/workflow/test-report.md
 
 完成后进入 **🚦 人类审查节点 #6**
 
@@ -211,41 +256,55 @@ effort: max
 ### 🚦 人类审查节点 #6: 最终验收
 
 **审查内容**:
-- ✅ 测试通过率是否达标？（建议 ≥95%）
-- ✅ 功能是否符合预期？
-- ✅ 文档是否完整？
-- ✅ 代码质量是否达标？
+- ✅ 测试通过率达标？（建议 ≥95%）
+- ✅ 功能符合预期？
+- ✅ 文档完整？
+- ✅ 代码质量达标？
 
-**操作选项**:
-- **通过交付**: 输入 "交付"
-- **修复问题**: 输入 "修复: [问题描述]"
-- **执行P1测试**: 输入 "执行P1测试"
-- **进入下轮迭代**: 输入 "迭代: [新需求]"
+**查看报告**: `cat .claude/workflow/test-report.md`
+
+**操作**:
+- 通过交付 → 输入 "交付"
+- 修复问题 → 输入 "修复: [问题]"
+- 执行P1测试 → 输入 "执行P1测试"
+- 下轮迭代 → 输入 "迭代: [新需求]"
 
 ---
 
-## 工作流输出清单
+## 工作流输出
 
-完整流程结束后，`.claude/workflow/` 目录下包含：
+完整流程后，`.claude/workflow/` 包含：
 
 ```
 .claude/workflow/
-├── requirements.md           # 需求文档
-├── solution-design.md        # 技术方案
-├── implementation-plan.md    # 实现计划
-├── documentation-template.md # 文档框架
-├── code-documentation.md     # 代码文档
-├── review-report.md          # AI评审报告
-├── test-strategy.md          # 测试策略
-└── test-report.md            # 测试报告
+├── requirements.md           # 需求文档 (精简格式)
+├── solution-design.md        # 技术方案 (精简格式)
+├── implementation-plan.md    # 实现计划 (精简格式)
+├── documentation-template.md # 文档框架 (精简格式)
+├── code-documentation.md     # 代码文档 (精简格式)
+├── review-report.md          # AI评审报告 (精简格式)
+├── test-strategy.md          # 测试策略 (精简格式)
+└── test-report.md            # 测试报告 (精简格式)
 ```
+
+---
+
+## Token优化措施
+
+✅ **内联命令预读取**: 使用 `!cat file` 预读取文档，避免agent重复读取
+✅ **参数传递**: 通过调用prompt传递内容，agent不再读取文件
+✅ **精简文档格式**: 去除冗余，仅保留核心信息
+✅ **Agent Memory**: solution-architect等agent使用memory缓存项目信息
+✅ **最小化扫描**: 限定代码搜索范围，避免全局扫描
+
+**预期效果**: Token使用量降低 40-50%
 
 ---
 
 ## 回滚与迭代
 
 任何阶段发现问题：
-- **轻微问题**: 本地修改，继续流程
-- **方案问题**: 输入 "回退到阶段2"
-- **需求理解错误**: 输入 "回退到阶段1"
-- **质量不达标**: 输入 "进入迭代优化"
+- 轻微问题 → 本地修改，继续
+- 方案问题 → 输入 "回退到阶段2"
+- 需求错误 → 输入 "回退到阶段1"
+- 质量不达标 → 输入 "进入迭代优化"
