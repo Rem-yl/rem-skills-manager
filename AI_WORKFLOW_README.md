@@ -1,11 +1,12 @@
-# AI 代码生成可控闭环工作流系统
+# AI 代码生成可控闭环工作流系统（TDD版）
 
-这是一套基于 Claude Code Skills + Agents 的可编排、可审查、可迭代的代码生成工作流系统。
+这是一套基于 Claude Code Skills + Agents 的可编排、可审查、可迭代的代码生成工作流系统，**完整实现 TDD (测试驱动开发) 流程**。
 
 ## 🎯 核心价值
 
-通过 **6阶段门控流程 + 6个人类审查节点**，实现：
+通过 **7阶段门控流程 + 7个人类审查节点 + TDD RED-GREEN 循环**，实现：
 
+- ✅ **TDD 测试驱动**: 测试用例先于代码，RED → GREEN 验证完整
 - ✅ **稳定的需求匹配**: 多阶段需求确认，确保方向正确
 - ✅ **清晰的代码解释**: 代码与文档同步生成，易于理解和评审
 - ✅ **可控的测试规模**: 分级测试策略，避免用例爆炸
@@ -23,16 +24,24 @@
    ↓
 [阶段2: 技术方案设计] → 🚦 人类审查 #2
    ↓
-[阶段3: 实现计划与文档框架] → 🚦 人类审查 #3
+[阶段3: 实现计划 + 测试计划框架] → 🚦 人类审查 #3
    ↓
-[阶段4: 代码生成 + 文档生成 + AI评审] → 🚦 人类审查 #4
+[阶段4: TDD 测试用例设计] → 🚦 人类审查 #4 ⭐ 新增
    ↓
-[阶段5: 测试策略 + 用例生成] → 🚦 人类审查 #5
+[阶段5: 测试代码生成 + RED验证] → 🚦 人类审查 #5 ⭐ 新增
    ↓
-[阶段6: 测试执行 + 验证报告] → 🚦 人类审查 #6
+[阶段6: 实现代码 + GREEN验证 + AI评审] → 🚦 人类审查 #6
+   ↓
+[阶段7: 完整测试执行 + 验收] → 🚦 人类审查 #7
    ↓
 交付
 ```
+
+**TDD 流程亮点**:
+- 🔴 **阶段4**: 设计测试用例（基于需求，不看代码）
+- 🔴 **阶段5**: 生成测试代码 → 验证失败（RED 阶段）
+- 🟢 **阶段6**: 生成实现代码 → 验证通过（GREEN 阶段）
+- ✅ **阶段7**: 完整测试套件执行
 
 ---
 
@@ -72,17 +81,18 @@
 
 ## 🏗️ 系统架构
 
-### 核心 Agents（7个）
+### 核心 Agents（8个）
 
-| Agent | 职责 | 关键能力 |
-|-------|------|---------|
-| **requirement-analyzer** | 需求分析专家 | 理解需求、拆解任务、排优先级 |
-| **solution-architect** | 架构设计师 | 设计方案、评估风险、提供备选 |
-| **implementation-planner** | 实现规划师 | 生成实现计划、文档框架 |
-| **code-generator** | 代码生成器 | 生成代码、同步文档 |
-| **code-reviewer** | 代码评审专家 | 安全性、规范性、性能评审 |
-| **test-strategist** | 测试策略师 | 分级测试策略、控制用例数量 |
-| **test-executor** | 测试执行器 | 执行测试、生成报告 |
+| Agent | 职责 | 关键能力 | TDD 角色 |
+|-------|------|---------|---------|
+| **requirement-analyzer** | 需求分析专家 | 理解需求、拆解任务、排优先级 | - |
+| **solution-architect** | 架构设计师 | 设计方案、评估风险、提供备选 | - |
+| **implementation-planner** | 实现规划师 | 生成实现计划、测试计划框架 | 准备测试框架 |
+| **test-strategist** | TDD 测试用例设计专家 | 基于需求设计测试用例 | 🔴 测试设计 |
+| **test-code-generator** | 测试代码生成专家 | 生成测试代码、RED验证 | 🔴 RED 阶段 |
+| **code-generator** | 实现代码生成专家 | 生成实现代码、GREEN验证 | 🟢 GREEN 阶段 |
+| **code-reviewer** | 代码评审专家 | 安全性、规范性、性能评审 | 质量保障 |
+| **test-executor** | 测试执行器 | 执行完整测试、生成报告 | 最终验收 |
 
 ### Skills 编排（4个）
 
@@ -92,6 +102,40 @@
 | **start-new-feature** | 快速启动 | 新功能开发 |
 | **quick-fix** | 快速修复 | 小bug修复 |
 | **review-only** | 仅评审 | 审查现有代码 |
+
+---
+
+## 🎨 TDD 流程说明
+
+本工作流完整实现 **TDD (测试驱动开发)** 理念：
+
+### RED-GREEN-REFACTOR 循环
+
+```
+阶段4: 设计测试用例
+   ↓ （基于需求，不看代码）
+阶段5: 生成测试代码 → 🔴 RED（测试失败）
+   ↓ （验证失败原因：实现不存在）
+阶段6: 生成实现代码 → 🟢 GREEN（测试通过）
+   ↓ （100% 通过率 + AI评审）
+阶段7: 完整测试套件 → ✅ 验收
+```
+
+### TDD 核心优势
+
+- ✅ **测试优先**: 在代码编写之前明确验收标准
+- ✅ **RED 验证**: 确保测试有效（会失败）
+- ✅ **GREEN 驱动**: 实现代码直接满足测试需求
+- ✅ **回归保护**: 防止功能退化
+
+### 与传统流程对比
+
+| 传统流程 | TDD 流程 |
+|---------|---------|
+| 需求 → 代码 → 测试 | 需求 → **测试用例** → 测试代码(RED) → 实现代码(GREEN) |
+| 测试依赖代码实现 | 测试独立于代码，基于需求 |
+| 无 RED-GREEN 验证 | 完整 RED-GREEN 循环验证 |
+| 测试覆盖率可能不足 | 测试优先，覆盖率有保障 |
 
 ---
 
@@ -111,33 +155,45 @@
 
 ### 节点 #3: 计划确认
 - **位置**: 阶段3完成后
-- **审查内容**: 实现步骤、验证标准、文档框架
-- **审查文档**: `.claude/workflow/implementation-plan.md`
+- **审查内容**: 实现步骤、验证标准、测试计划框架、文档框架
+- **审查文档**: `.claude/workflow/implementation-plan.md`, `.claude/workflow/test-plan-framework.md`, `.claude/workflow/documentation-template.md`
 - **操作选项**: [通过] [调整计划]
 
-### 节点 #4: 代码与文档双评审 ⭐
+### 节点 #4: TDD 测试用例审查 ⭐ 新增
 - **位置**: 阶段4完成后
+- **审查内容**: 测试用例设计（基于需求，不涉及代码）
+- **审查文档**: `.claude/workflow/tdd-test-cases.md`
+- **操作选项**: [通过] [调整用例] [删减冗余]
+
+### 节点 #5: 测试代码与 RED 阶段验证 ⭐ 新增
+- **位置**: 阶段5完成后
 - **审查内容**:
+  - 测试代码质量
+  - RED 阶段验证（测试失败是否符合预期）
+- **审查文档**:
+  - `.claude/workflow/test-code-documentation.md`
+  - `.claude/workflow/test-execution-report-red.md`
+- **操作选项**: [通过] [修改测试] [重新生成]
+
+### 节点 #6: 实现代码与 GREEN 阶段验证 ⭐
+- **位置**: 阶段6完成后
+- **审查内容**:
+  - GREEN 阶段验证（测试通过，100% 通过率）
   - AI评审报告（安全性、规范性、性能）
   - 代码文档（功能说明、设计逻辑、改动影响）
   - 人工代码审查（业务逻辑、边界处理）
 - **审查文档**:
+  - `.claude/workflow/test-execution-report-green.md`
   - `.claude/workflow/review-report.md`
   - `.claude/workflow/code-documentation.md`
   - 代码改动 (`git diff`)
-- **操作选项**: [通过] [修改] [重新生成] [迭代优化]
+- **操作选项**: [通过] [修改] [重新生成] [优化]
 
-### 节点 #5: 测试策略审查
-- **位置**: 阶段5完成后
-- **审查内容**: 测试优先级、覆盖度、冗余用例
-- **审查文档**: `.claude/workflow/test-strategy.md`
-- **操作选项**: [通过] [调整优先级] [删减冗余]
-
-### 节点 #6: 最终验收
-- **位置**: 阶段6完成后
-- **审查内容**: 测试通过率、功能验证、交付质量
-- **审查文档**: `.claude/workflow/test-report.md`
-- **操作选项**: [通过交付] [修复问题] [执行P1测试] [进入下轮迭代]
+### 节点 #7: 最终验收
+- **位置**: 阶段7完成后
+- **审查内容**: 完整测试通过率、功能验证、交付质量、TDD 流程完整性
+- **审查文档**: `.claude/workflow/test-execution-report-final.md`
+- **操作选项**: [通过交付] [修复问题] [进入下轮迭代]
 
 ---
 
@@ -145,32 +201,37 @@
 
 ```
 .claude/
-├── agents/                      # 7个专业 Agents
+├── agents/                      # 8个专业 Agents
 │   ├── requirement-analyzer/
 │   ├── solution-architect/
 │   ├── implementation-planner/
-│   ├── code-generator/
+│   ├── test-strategist/         # TDD 测试用例设计专家
+│   ├── test-code-generator/     # ⭐ 新增: TDD RED 阶段
+│   ├── code-generator/          # 修改: TDD GREEN 阶段
 │   ├── code-reviewer/
-│   ├── test-strategist/
 │   └── test-executor/
 │
 ├── skills/                      # 4个编排 Skills
-│   ├── ai-dev-workflow/
+│   ├── ai-dev-workflow/         # 修改: 7阶段 TDD 流程
 │   ├── start-new-feature/
 │   ├── quick-fix/
 │   └── review-only/
 │
 ├── workflow/                    # 工作流产出目录
-│   ├── requirements.md          # 阶段1产出
-│   ├── solution-design.md       # 阶段2产出
-│   ├── implementation-plan.md   # 阶段3产出
-│   ├── documentation-template.md
-│   ├── code-documentation.md    # 阶段4产出
-│   ├── review-report.md         # AI评审报告
-│   ├── test-strategy.md         # 阶段5产出
-│   └── test-report.md           # 阶段6产出
+│   ├── requirements.md                      # 阶段1产出
+│   ├── solution-design.md                   # 阶段2产出
+│   ├── implementation-plan.md               # 阶段3产出
+│   ├── test-plan-framework.md               # 阶段3产出 ⭐ 新增
+│   ├── documentation-template.md            # 阶段3产出
+│   ├── tdd-test-cases.md                    # 阶段4产出 ⭐ 新增
+│   ├── test-code-documentation.md           # 阶段5产出 ⭐ 新增
+│   ├── test-execution-report-red.md         # 阶段5产出 ⭐ 新增 (RED)
+│   ├── code-documentation.md                # 阶段6产出
+│   ├── review-report.md                     # 阶段6产出 (AI评审)
+│   ├── test-execution-report-green.md       # 阶段6产出 ⭐ 新增 (GREEN)
+│   └── test-execution-report-final.md       # 阶段7产出
 │
-└── workflow-config.json         # 工作流配置
+└── workflow-config.json         # 工作流配置 (7个审查节点)
 ```
 
 ---
@@ -191,11 +252,23 @@ cat .claude/workflow/solution-design.md
 # 查看代码改动
 git diff
 
+# 查看TDD测试用例设计
+cat .claude/workflow/tdd-test-cases.md
+
+# 查看测试代码文档
+cat .claude/workflow/test-code-documentation.md
+
+# 查看RED阶段验证报告
+cat .claude/workflow/test-execution-report-red.md
+
 # 查看AI评审报告
 cat .claude/workflow/review-report.md
 
-# 查看测试策略
-cat .claude/workflow/test-strategy.md
+# 查看GREEN阶段验证报告
+cat .claude/workflow/test-execution-report-green.md
+
+# 查看最终测试报告
+cat .claude/workflow/test-execution-report-final.md
 ```
 
 ### 2. 给出反馈
@@ -273,10 +346,11 @@ continue
 **预期流程**:
 1. ✅ 需求分析 → 🚦 人类确认 → 通过
 2. ✅ 架构设计（提供2个方案） → 🚦 人类选择 → 选择方案A
-3. ✅ 实现规划 → 🚦 人类确认 → 通过
-4. ✅ 代码生成 + AI评审 → 🚦 人类审查 → 通过
-5. ✅ 测试策略（P0:8, P1:5, P2:2） → 🚦 人类审查 → 删减冗余
-6. ✅ 测试执行 → 🚦 人类验收 → 通过交付
+3. ✅ 实现规划+测试框架 → 🚦 人类确认 → 通过
+4. ✅ TDD测试用例设计 → 🚦 人类审查测试用例 → 通过
+5. ✅ 测试代码生成 → 🔴 RED验证(失败) → 🚦 人类审查 → 通过
+6. ✅ 实现代码生成 → 🟢 GREEN验证(通过) + AI评审 → 🚦 人类审查 → 通过
+7. ✅ 完整测试执行 → 🚦 人类验收 → 通过交付
 
 ### 回滚测试场景
 

@@ -16,30 +16,46 @@
       "enabled": true,
       "required": false,
       "timeout_minutes": 15,
-      "description": "实现计划审查"
+      "description": "实现计划 + 测试计划框架审查"
     },
-    "gate_4_code": {
+    "gate_4_tdd_test_cases": {
       "enabled": true,
       "required": true,
       "timeout_minutes": 15,
-      "description": "代码与文档双评审"
+      "description": "TDD 测试用例设计审查"
     },
-    "gate_5_test": {
+    "gate_5_test_code": {
       "enabled": true,
-      "required": false,
-      "timeout_minutes": 10,
-      "description": "测试策略审查"
+      "required": true,
+      "timeout_minutes": 15,
+      "description": "测试代码 + RED阶段验证审查"
     },
-    "gate_6_acceptance": {
+    "gate_6_implementation": {
+      "enabled": true,
+      "required": true,
+      "timeout_minutes": 15,
+      "description": "实现代码 + GREEN阶段验证 + AI评审"
+    },
+    "gate_7_acceptance": {
       "enabled": true,
       "required": true,
       "timeout_minutes": 10,
-      "description": "最终验收"
+      "description": "完整测试 + 最终验收"
     }
   },
   "quick_fix_mode": {
-    "skip_gates": ["gate_2_solution", "gate_3_plan", "gate_5_test"],
-    "description": "快速修复模式跳过的审查节点"
+    "skip_gates": [
+      "gate_2_solution",
+      "gate_3_plan",
+      "gate_4_tdd_test_cases",
+      "gate_5_test_code"
+    ],
+    "description": "快速修复模式跳过的审查节点（直接进入实现代码生成）"
+  },
+  "tdd_mode": {
+    "enabled": true,
+    "red_green_verification": true,
+    "description": "TDD 模式：测试用例设计 → 测试代码(RED) → 实现代码(GREEN)"
   },
   "test_limits": {
     "p0_max": 10,
