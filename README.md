@@ -25,13 +25,16 @@ Guide rigorous feature development with TDD workflow and quality standards.
 ### 🌏 translate-pdf-to-markdown
 Translate English PDF academic papers to Chinese Markdown with LaTeX formulas preserved.
 
+### 🔄 retro
+Session retrospective — distill lessons and decisions, persist to project memory. Use at the end of a work session.
+
 ## Installation
 
 ### From GitHub
 ```bash
 # In Claude Code
 /plugin marketplace add Rem-yl/rem-skills-manager
-/plugin install rem-skills@rem-skills-manager
+/plugin install rem-skills@rem-marketplace
 ```
 
 ### Local Development
